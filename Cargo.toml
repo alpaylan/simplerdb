@@ -1,6 +1,15 @@
-[workspace]
+[package]
+name = "simplerdb"
+version = "0.1.0"
+edition = "2021"
 
-members = [
-    "simplerdb-client",
-    "simplerdb-server"
-]
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
+
+[dependencies]
+chrono = "0.4.38"

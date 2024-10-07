@@ -1,3 +1,5 @@
+use crate::log_manager::LogManager;
+
 
 
 pub(crate) struct SimpleDB {

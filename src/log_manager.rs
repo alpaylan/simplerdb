@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use crate::{file_manager::{BlockId, FileManager}, page::Page};
-use client::resultset::Record;
+use crate::resultset::Record;
 
 pub(crate) struct LogManager {
     file_manager: FileManager,

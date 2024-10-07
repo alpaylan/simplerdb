@@ -3,9 +3,9 @@ use crate::{connection::{Connection, Properties}, sql_exception::SQLException};
 
 
 pub(crate) enum Driver {
-    ClientDriver,
-    EmbeddedDriver,
-    NetworkDriver,
+    Client,
+    Embedded,
+    Network,
 }
 
 impl Driver {
