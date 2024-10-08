@@ -49,7 +49,8 @@ impl FileManager {
         let offset = block.block_number * self.blocksize;
         let mut file = std::fs::File::open(filename)?;
         file.seek(SeekFrom::Start(offset))?;
-        file.read_exact(page.bb.contents())
+        file.read(page.bb.contents())?;
+        Ok(())
     }
 
     pub(crate) fn write(&self, block: &BlockId, page: &mut Page) -> Result<(), std::io::Error> {

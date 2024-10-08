@@ -33,6 +33,10 @@ impl ByteBuffer {
         self.position = 0;
         &mut self.bytes
     }
+
+    pub(crate) fn bytes(&self) -> &[u8] {
+        &self.bytes
+    }
 }
 
 impl ByteBuffer {

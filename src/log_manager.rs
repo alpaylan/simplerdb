@@ -6,12 +6,13 @@ use crate::{
     page::Page,
 };
 
+#[derive(Debug)]
 pub(crate) struct LogManager {
-    log_file: PathBuf,
-    log_page: Page,
-    current_block: BlockId,
-    latest_lsn: u64,
-    last_saved_lsn: u64,
+    pub(crate) log_file: PathBuf,
+    pub(crate) log_page: Page,
+    pub(crate) current_block: BlockId,
+    pub(crate) latest_lsn: u64,
+    pub(crate) last_saved_lsn: u64,
 }
 
 impl LogManager {
@@ -39,13 +40,50 @@ impl LogManager {
     }
 }
 impl LogManager {
-    pub(crate) fn append(&mut self, record: &[u8]) -> u64 {
-        unimplemented!()
+    pub(crate) fn append(
+        &mut self,
+        file_manager: &FileManager,
+        record: &[u8],
+    ) -> Result<u64, std::io::Error> {
+        let mut boundary = self.log_page.get_int(0);
+        let rec_size = record.len() as u64;
+        let bytes_needed = rec_size + 8;
+        println!("[before] Boundary: {:?}", boundary);
+        println!("[before] Bytes needed: {:?}", bytes_needed);
+        if boundary < bytes_needed + 8 {
+            self.flush(file_manager)?;
+            self.current_block = file_manager.append(&self.log_file.to_string_lossy())?;
+            self.log_page.set_int(0, file_manager.blocksize);
+            file_manager.write(&self.current_block, &mut self.log_page)?;
+            boundary = self.log_page.get_int(0);
+        }
+        
+        println!("[after] Boundary: {:?}", boundary);
+        println!("[after] Bytes needed: {:?}", bytes_needed);
+        let rec_pos = boundary - bytes_needed;
+        
+        self.log_page.set_bytes(rec_pos, record);
+        self.log_page.set_int(0, rec_pos);
+
+        self.latest_lsn += 1;
+        Ok(self.latest_lsn)
     }
 
     pub(crate) fn flush(&mut self, file_manager: &FileManager) -> Result<(), std::io::Error> {
         file_manager.write(&self.current_block, &mut self.log_page)?;
         self.last_saved_lsn = self.latest_lsn;
+        Ok(())
+    }
+
+    pub(crate) fn flush_with_lsn(
+        &mut self,
+        file_manager: &FileManager,
+        lsn: u64,
+    ) -> Result<(), std::io::Error> {
+        if lsn > self.last_saved_lsn {
+            self.flush(file_manager)?;
+        }
+
         Ok(())
     }
 }

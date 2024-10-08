@@ -13,3 +13,5 @@ path = "src/client.rs"
 
 [dependencies]
 chrono = "0.4.38"
+expect-test = "1.5.0"
+pretty-hex = "0.4.1"
