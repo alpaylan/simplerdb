@@ -84,7 +84,7 @@ impl ByteBuffer {
     pub(crate) fn set_bytes(&mut self, value: &[u8]) {
         self.bytes[self.position as usize..(self.position + value.len() as u64) as usize]
             .copy_from_slice(value);
-        println!("Setting bytes between {:?} and {:?}", self.position, self.position + value.len() as u64);
+        // println!("Setting bytes between {:?} and {:?}", self.position, self.position + value.len() as u64);
         self.position = self.position + value.len() as u64;
     }
 }

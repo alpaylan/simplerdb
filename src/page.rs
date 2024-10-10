@@ -30,18 +30,15 @@ impl Page {
 
     pub(crate) fn get_bytes(&mut self, offset: u64) -> &[u8] {
         let len = self.bb.get_int_with_offset(offset);
-        println!("Getting bytes between {offset} {}", offset + len);
         self.bb.get_bytes(len)
     }
 
     pub(crate) fn get_string(&mut self, offset: u64) -> &str {
-        println!("Getting string at offset: {:?}", offset);
         let bytes = self.get_bytes(offset);
         std::str::from_utf8(bytes).unwrap()
     }
 
     pub(crate) fn set_int(&mut self, offset: u64, value: u64) {
-        println!("Setting int({}) at offset: {:?}", value, offset);
         self.bb.set_int_with_offset(offset, value);
     }
 
